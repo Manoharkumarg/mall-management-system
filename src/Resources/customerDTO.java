@@ -12,7 +12,6 @@ public class customerDTO {
         this.cust_name=cust_name;
         this.cust_date=cust_date;
     }
-
     public int getCust_id() {
         return this.cust_id;
     }
