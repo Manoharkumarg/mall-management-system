@@ -4,13 +4,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import Resources.loginDTO;
 
 public class loginDAO extends Connect {
     private static loginDAO instance;
     PreparedStatement getLogin;
+    PreparedStatement addLogin;
+    PreparedStatement userId;
     private loginDAO() throws SQLException{
-        getLogin=con.prepareStatement("SELECT L.EMAIL,L.password,L.user_id,U.User_role FROM login L JOIN User U USING(user_id) WHERE L.email=?");
+        addLogin=con.prepareStatement("INSERT INTO login VALUES(?,?,?)");
+        userId=con.prepareStatement("SELECT user_id FROM login WHERE email=? AND password=?");
     }
 
     public static loginDAO getInstance() throws SQLException{
@@ -19,13 +21,18 @@ public class loginDAO extends Connect {
         }
         return instance;
     }
-
-    public loginDTO getLoginData(String email) throws SQLException{
-        getLogin.setString(1, email);
-        ResultSet res=getLogin.executeQuery();
-        if(res.next()){
-            return new loginDTO(res.getInt(3), res.getString(1), res.getString(2), res.getString(4));
-        }
-        return null;
+    public void addNewLogin(String email,String pass,int id) throws SQLException{
+        addLogin.setString(1, email);
+        addLogin.setString(2, pass);
+        addLogin.setInt(3, id);
+        addLogin.executeUpdate();
+    }
+    public int getUserId(String email,String password) throws SQLException{
+        userId.setString(1, email);
+        userId.setString(2, password);
+        ResultSet rs=userId.executeQuery();
+        if(rs.next())
+        return rs.getInt(1);
+        return 0;
     }
 }

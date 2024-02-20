@@ -1,23 +1,26 @@
 package Controllers;
 
+import java.sql.SQLException;
+
 import Models.loginDAO;
-import Resources.loginDTO;
-import Util.Cookie;
+import Models.userDAO;
 
 public class UserControll {
-    public int login(String email,String password)throws Exception{
-        loginDAO login=loginDAO.getInstance();
-        loginDTO user=login.getLoginData(email);
-        if(user==null){
-            throw new Exception("Invalid user");
+    public static int checkLogin(String email,String password) throws SQLException{
+        loginDAO l=loginDAO.getInstance();
+        int u_id=l.getUserId(email,password);
+        if(u_id==0){
+            return 0;
         }
-        if(!user.getPassword().equals(password)){
-            throw new Exception("Invalid password");
+        else{
+            userDAO u=userDAO.getInstance();
+            String role=u.getUserRole(u_id);
+            if(role=="admin"){
+                return 1;
+            }
+            else{
+                return 2;
+            }
         }
-        Cookie.userId=user.getUserId();
-        if(user.getRole().equals("admin")){
-            return 1;
-        }
-        return 2;
     }
 }
