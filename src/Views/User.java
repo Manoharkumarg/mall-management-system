@@ -2,8 +2,9 @@ package Views;
 
 import java.sql.SQLException;
 
-import Controllers.UserControll;
+import Controllers.userController;
 import Controllers.blockController;
+import Controllers.loginController;
 import Controllers.rentpayController;
 import Controllers.tenantController;
 import Util.Input;
@@ -14,14 +15,39 @@ public class User extends Input{
         String email=sc.next();
         System.out.println("Enter your password");
         String password=sc.next();
-        int user=UserControll.checkLogin(email,password);
+        int user=userController.checkLogin(email,password);
         if(user==0){
             System.out.println("Invalid credentials");
             return;
         }
         else if(user==1){
             System.out.println("Enter 1 to add new ADMIN");
-            // int a=sc.nextInt();
+            int a=sc.nextInt();
+            if(a==1){
+                System.out.println("Enter new admin's name");
+                String name=sc.next();
+                int u_id=userController.addNewAdmin(name);
+                System.out.println("Enter new admin's email");
+                String Email=sc.next();
+                if(!Email.contains("@gmail.com")){
+                    System.out.println("Invalid Email");
+                    return;
+                }
+                System.out.println("Enter new admin's password");
+                String Password="";
+                while(Password.length()<8){
+                    Password=sc.next();
+                    if(Password.length()<8){
+                        System.out.println("Create a STRONG password");
+                    }
+                }
+                loginController.addLoginData(Email,Password,u_id);
+                System.out.println("New admin has been added successfully");
+
+                }
+            else{
+                System.out.println("Invalid choice");
+            }
         }
         else{
             System.out.println("Enter 1 to pay rent");

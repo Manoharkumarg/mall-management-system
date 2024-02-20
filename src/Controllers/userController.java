@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import Models.loginDAO;
 import Models.userDAO;
 
-public class UserControll {
+public class userController {
     public static int checkLogin(String email,String password) throws SQLException{
         loginDAO l=loginDAO.getInstance();
         int u_id=l.getUserId(email,password);
@@ -15,12 +15,18 @@ public class UserControll {
         else{
             userDAO u=userDAO.getInstance();
             String role=u.getUserRole(u_id);
-            if(role=="admin"){
+            if(role.equals("admin")){
                 return 1;
             }
             else{
                 return 2;
             }
         }
+    }
+    public static int addNewAdmin(String name) throws SQLException{
+        userDAO user=userDAO.getInstance();
+        user.addNewAdmin(name);
+        int u_id=user.getUserId(name);
+        return u_id;
     }
 }
